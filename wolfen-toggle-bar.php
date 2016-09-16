@@ -29,6 +29,10 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 					margin-top:0 !important;
 				}
 
+				body.admin-bar:before {
+				   top:0 !important;
+				}
+
 				#wpadminbar .<?php echo $btn; ?> {
 					position:absolute !important;
 					right:0 !important;
