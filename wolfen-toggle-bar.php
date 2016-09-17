@@ -8,7 +8,7 @@ Plugin URI: https://github.com/jugheadeatsalot/wolfen-toggle-bar
 Version: 0.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
- */
+*/
 if(!class_exists('Wolfen_Toggle_Bar')) {
 	class Wolfen_Toggle_Bar {
 		protected $_buttonClass = 'wtb-button';
@@ -31,6 +31,10 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 
 				body.admin-bar:before {
 					top:0 !important;
+				}
+
+				#wpadminbar {
+					position:fixed !important;
 				}
 
 				#wpadminbar .<?php echo $btn; ?> {
@@ -61,17 +65,20 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 		public function js() { ?>
 			<script type="text/javascript">
 				jQuery(document).ready(function($) {
-					var $bar = $('#wpadminbar');
 					var hiddenClass = '<?php echo $this->_hiddenClass; ?>';
 					var buttonClass = '<?php echo $this->_buttonClass; ?>';
 
-					$bar.css({'top': -barHeight()}).addClass(hiddenClass);
+					var $bar = $('#wpadminbar');
 
-					$bar.append($('<div class="' + buttonClass + '"><span class="ab-icon"></span></div>').css({
-						'background-color': $bar.css('background-color')
-					}));
+					$bar.addClass(hiddenClass).append(
+						$('<div class="' + buttonClass + '"></div>')
+					).css({'visibility': 'hidden'});
 
 					var $button = $('.' + buttonClass);
+
+					$button.append('<span class="ab-icon"></span>').css({
+						'background-color': $bar.css('background-color')
+					});
 
 					function barHeight() {
 						return $bar.outerHeight();
@@ -81,19 +88,36 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 						return $bar.hasClass(hiddenClass);
 					}
 
-					function wtbOffset() {
+					function suOffset() {
+						var $su = $('#__su__toolbar');
+						var topOffset = 0;
+
+						if($su.length) {
+							topOffset = parseInt($su.outerHeight());
+						}
+
+						return topOffset;
+					}
+
+					function wtbDo() {
+						if(barHidden()) {
+							$bar.css({'top': -barHeight() + suOffset()});
+						} else {
+							$bar.css({'top': suOffset()});
+						}
+
 						$button.css({
 							'top': barHeight()
 						});
 					}
 
-					(function() {
+					function wtbInit() {
 						var speed = 300;
 
 						$button.on('click', function() {
 							if(barHidden()) {
 								$bar.stop().animate(
-									{'top': 0},
+									{'top': suOffset()},
 									speed,
 									function() {
 										$(this).toggleClass(hiddenClass);
@@ -101,7 +125,7 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 								);
 							} else {
 								$bar.stop().animate(
-									{'top': -barHeight()},
+									{'top': -barHeight() + suOffset()},
 									speed,
 									function() {
 										$(this).toggleClass(hiddenClass);
@@ -109,19 +133,14 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 								);
 							}
 						});
-					})();
 
-					wtbOffset();
+						$bar.css({'visibility': 'visible'});
 
-					$(window).on('resize', function() {
-						if(barHidden()) {
-							$bar.css({'top': -barHeight()});
-						} else {
-							$bar.css({'top': 0});
-						}
+						wtbDo();
+					}
 
-						wtbOffset();
-					});
+					$(window).load(wtbInit);
+					$(window).resize(wtbDo);
 				});
 			</script>
 		<?php }
