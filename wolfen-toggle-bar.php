@@ -5,7 +5,7 @@ Description: Makes the default WordPress adminbar toggleable.
 Author: John Romeral
 Author URI: http://johnromeral.com
 Plugin URI: https://github.com/jugheadeatsalot/wolfen-toggle-bar
-Version: 0.0.1
+Version: 0.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
