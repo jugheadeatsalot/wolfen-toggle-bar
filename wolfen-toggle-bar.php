@@ -30,7 +30,7 @@ if(!class_exists('Wolfen_Toggle_Bar')) {
 				}
 
 				body.admin-bar:before {
-				   top:0 !important;
+					top:0 !important;
 				}
 
 				#wpadminbar .<?php echo $btn; ?> {
